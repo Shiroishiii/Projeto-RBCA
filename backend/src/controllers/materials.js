@@ -22,6 +22,15 @@ export async function listMaterials(req, res) {
 export async function deleteMaterial(req, res) {
   const id = Number(req.params.id);
 
+  const usuario_id = 0
+  const acao = "DELETE"
+  const recurso_afetado = "materials"
+  const id_recurso_afetado = id
+  const valor_antigo = null
+  const valor_novo = null
+  const campos_alterados = null
+  const ip = req.ip || req.connection.remoteAddress
+
   if (!Number.isSafeInteger(id) || id <= 0) {
     return res.status(400).json({ message: "ID invalido." });
   }
@@ -31,7 +40,20 @@ export async function deleteMaterial(req, res) {
     [id]
   );
 
+  const obj = {
+    usuario_id: usuario_id,
+    acao: acao,
+    recurso_afetado: recurso_afetado,
+    id_recurso_afetado: id_recurso_afetado,
+    valor_antigo: valor_antigo,
+    valor_novo: valor_novo,
+    campos_alterados: campos_alterados,
+    ip: ip,
+    status_acao: "FRACASSO"
+  };
+
   if (!result.affectedRows) {
+    registerLog(obj);
     return res.status(404).json({ message: "Material nao encontrado." });
   }
 
